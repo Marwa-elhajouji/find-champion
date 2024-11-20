@@ -1,0 +1,10 @@
+# Node.js Modules
+node_modules/
+
+# Dossier de compilation TypeScript
+dist/
+
+# Fichiers de couverture de tests
+coverage/
+
+

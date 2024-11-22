@@ -8,11 +8,12 @@ import {
   TablePagination,
   TableSortLabel,
   Paper,
-  IconButton,
 } from "@mui/material";
-import { ResponsiveScatterPlotCanvas } from "@nivo/scatterplot";
 import React, { useState } from "react";
 import { Player } from "../validation/schemas/playerSchema";
+import PlayerRow from "./PlayerRow";
+import { sortPlayers } from "../utils/sortPlayers";
+
 const PlayersTable = ({
   players,
   champions,
@@ -45,30 +46,13 @@ const PlayersTable = ({
     setPage(0);
   };
 
-  const sortedPlayers = [...players].sort((a, b) => {
-    let valueA: number | boolean;
-    let valueB: number | boolean;
+  const sortedPlayers = sortPlayers(
+    players,
+    champions,
+    orderBy,
+    orderDirection
+  );
 
-    if (orderBy === "champion") {
-      valueA = champions.some(
-        (champion) => champion.age === a.age && champion.score === a.score
-      );
-      valueB = champions.some(
-        (champion) => champion.age === b.age && champion.score === b.score
-      );
-    } else {
-      valueA = a[orderBy];
-      valueB = b[orderBy];
-    }
-
-    return orderDirection === "asc"
-      ? valueA > valueB
-        ? 1
-        : -1
-      : valueA < valueB
-      ? 1
-      : -1;
-  });
   return (
     <>
       <TableContainer component={Paper}>
@@ -108,7 +92,7 @@ const PlayersTable = ({
           <TableBody>
             {sortedPlayers
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((player, index) => {
+              .map((player: Player, index: number) => {
                 const isChampion = champions.some(
                   (champion) =>
                     champion.age === player.age &&
@@ -116,28 +100,12 @@ const PlayersTable = ({
                 );
 
                 return (
-                  <TableRow
+                  <PlayerRow
                     key={index}
-                    sx={{
-                      backgroundColor: isChampion
-                        ? "rgba(255, 235, 59, 0.3)"
-                        : "",
-                    }}
-                  >
-                    <TableCell align="center">{player.age}</TableCell>
-                    <TableCell align="center">{player.score}</TableCell>
-                    <TableCell align="center">
-                      {isChampion ? "🏆" : "-"}
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        onClick={() => removePlayer(player)}
-                        color="error"
-                      >
-                        x
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+                    player={player}
+                    isChampion={isChampion}
+                    removePlayer={removePlayer}
+                  />
                 );
               })}
           </TableBody>
@@ -156,4 +124,5 @@ const PlayersTable = ({
     </>
   );
 };
+
 export default PlayersTable;

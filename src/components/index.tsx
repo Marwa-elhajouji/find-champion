@@ -1,68 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box } from "@mui/material";
-import { findChampions } from "../utils/findChampions";
-import { Player, PlayerSchema } from "../validation/schemas/playerSchema";
-import { ZodError } from "zod";
 import PlayersVisuals from "./PlayersVisuals";
 import PlayersForm from "./PlayersForm";
-import { validatePlayers } from "../validation/validation";
-import { ScatterPlotDatum, ScatterPlotRawSerie } from "@nivo/scatterplot";
+import { usePlayers } from "../hooks/usePlayers";
 
 const PlayersContent = () => {
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [formErrors, setFormErrors] = useState<{
-    age?: string;
-    score?: string;
-  }>({});
+  const {
+    players,
+    formErrors,
+    champions,
+    generatePlayers,
+    addPlayer,
+    removePlayer,
+    clearAllPlayers,
+  } = usePlayers();
 
-  const generatePlayers = (count: number) => {
-    const newPlayers = Array.from({ length: count }, () => ({
-      age: Math.floor(Math.random() * 50) + 1,
-      score: Math.floor(Math.random() * 2000),
-    }));
-    try {
-      const validPlayers = validatePlayers(newPlayers);
-      setPlayers(validPlayers);
-    } catch (e) {
-      console.error("Erreur de validation :", e);
-    }
-  };
-
-  useEffect(() => {
-    generatePlayers(50);
-  }, []);
-
-  const addPlayer = (age: number, score: number) => {
-    try {
-      const validPlayer = PlayerSchema.parse({ age, score });
-      const updatedPlayers = [...players, validPlayer];
-      validatePlayers(updatedPlayers);
-
-      setPlayers(updatedPlayers);
-      setFormErrors({});
-    } catch (e) {
-      if (e instanceof ZodError) {
-        const errors = e.errors.reduce(
-          (acc, curr) => ({ ...acc, [curr.path[0]]: curr.message }),
-          {}
-        );
-        setFormErrors(errors);
-      }
-    }
-  };
-
-  const removePlayer = (playerToRemove: Player) => {
-    setPlayers(players.filter((player) => player !== playerToRemove));
-  };
-
-  const clearAllPlayers = () => {
-    setPlayers([]);
-  };
-
-  
-  const champions = findChampions(players);
-
-  const scatterData: ScatterPlotRawSerie<ScatterPlotDatum>[] = [
+  const scatterData = [
     {
       id: "Joueurs",
       data: players

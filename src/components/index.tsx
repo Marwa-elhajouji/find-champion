@@ -7,7 +7,6 @@ import { usePlayers } from "../hooks/usePlayers";
 const PlayersContent = () => {
   const {
     players,
-    formErrors,
     champions,
     generatePlayers,
     addPlayer,
@@ -49,7 +48,6 @@ const PlayersContent = () => {
         addPlayer={addPlayer}
         generatePlayers={generatePlayers}
         clearAllPlayers={clearAllPlayers}
-        formErrors={formErrors}
       />
       <PlayersVisuals
         scatterData={scatterData}

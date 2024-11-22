@@ -32,8 +32,6 @@ const PlayersContent = () => {
     generatePlayers(50);
   }, []);
 
-  const champions = findChampions(players);
-
   const addPlayer = (age: number, score: number) => {
     try {
       const validPlayer = PlayerSchema.parse({ age, score });
@@ -60,6 +58,9 @@ const PlayersContent = () => {
   const clearAllPlayers = () => {
     setPlayers([]);
   };
+
+  
+  const champions = findChampions(players);
 
   const scatterData: ScatterPlotRawSerie<ScatterPlotDatum>[] = [
     {

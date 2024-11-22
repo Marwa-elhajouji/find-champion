@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import {
   Button,
   Stack,
-  TextField,
   Divider,
   Typography,
   Box,
+  TextField,
 } from "@mui/material";
 import { Player } from "../validation/schemas/playerSchema";
 
@@ -15,17 +15,29 @@ const PlayersForm = ({
   addPlayer,
   generatePlayers,
   clearAllPlayers,
-  formErrors,
 }: {
   players: Player[];
   champions: Player[];
   addPlayer: (age: number, score: number) => void;
   generatePlayers: (count: number) => void;
   clearAllPlayers: () => void;
-  formErrors: { age?: string; score?: string };
 }) => {
   const [age, setAge] = useState<string>("");
   const [score, setScore] = useState<string>("");
+  const [formErrors, setFormErrors] = useState<{
+    age?: string;
+    score?: string;
+  }>({});
+
+  const validateField = (name: string, value: string) => {
+    if (name === "age") {
+      return Number(value) <= 0 ? "L'âge doit être supérieur à 0." : "";
+    }
+    if (name === "score") {
+      return Number(value) < 0 ? "Le score ne peut pas être négatif." : "";
+    }
+    return "";
+  };
 
   const isAddButtonDisabled =
     !age ||
@@ -80,12 +92,12 @@ const PlayersForm = ({
             required
             value={age}
             onChange={(e) => {
-              setAge(e.target.value);
-              if (Number(e.target.value) <= 0) {
-                formErrors.age = "L'âge doit être supérieur à 0.";
-              } else {
-                formErrors.age = "";
-              }
+              const value = e.target.value;
+              setAge(value);
+              setFormErrors((prev) => ({
+                ...prev,
+                age: validateField("age", value),
+              }));
             }}
             error={!!formErrors.age}
             helperText={formErrors.age}
@@ -95,16 +107,16 @@ const PlayersForm = ({
             label="Score"
             type="number"
             fullWidth
+            required
             value={score}
             onChange={(e) => {
-              setScore(e.target.value);
-              if (Number(e.target.value) < 0) {
-                formErrors.score = "Le score ne peut pas être négatif.";
-              } else {
-                formErrors.score = "";
-              }
+              const value = e.target.value;
+              setScore(value);
+              setFormErrors((prev) => ({
+                ...prev,
+                score: validateField("score", value),
+              }));
             }}
-            required
             error={!!formErrors.score}
             helperText={formErrors.score}
           />

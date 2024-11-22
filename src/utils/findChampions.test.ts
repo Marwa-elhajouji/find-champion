@@ -1,5 +1,5 @@
 import { findChampions } from "./findChampions";
-import { Player } from "./findChampions";
+import { Player } from "../validation/schemas/playerSchema";
 
 describe("findChampions", () => {
   it("devrait retourner une liste vide pour une liste vide de joueurs", () => {
@@ -89,28 +89,6 @@ describe("findChampions", () => {
       });
     }
     expect(findChampions(players)).toBeDefined();
-  });
-
-  it("devrait lancer une erreur pour des âges négatifs", () => {
-    const players: Player[] = [
-      { age: 20, score: 1800 },
-      { age: -25, score: 1600 },
-    ];
-    expect(() => findChampions(players)).toThrow("Invalid age");
-  });
-
-  it("devrait lancer une erreur pour des scores non numériques", () => {
-    const players: Player[] = [
-      { age: 20, score: 1800 },
-      { age: 25, score: NaN },
-    ];
-    expect(() => findChampions(players)).toThrow("Invalid score");
-  });
-
-  it("devrait lancer une erreur pour des entrées de type incorrect", () => {
-    expect(() => findChampions("not an array" as any)).toThrow(
-      "Input must be an array of players"
-    );
   });
 
   it("devrait gérer correctement une liste de 1 million de joueurs", () => {

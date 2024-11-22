@@ -1,10 +1,8 @@
 import React from "react";
-import ChampionVisualizer from "./components/ChampionVisualizer";
+import PlayersContent from "./components";
 
 function App() {
-  return (
-    <ChampionVisualizer></ChampionVisualizer>
-  );
+  return <PlayersContent></PlayersContent>;
 }
 
 export default App;

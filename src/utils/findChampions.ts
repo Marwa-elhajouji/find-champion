@@ -1,33 +1,9 @@
-export interface Player {
-  age: number;
-  score: number;
-}
+import { Player } from "../validation/schemas/playerSchema";
 
 export function findChampions(players: Player[]): Player[] {
-  validatePlayers(players);
-
-  if (players.length <= 1) {
-    return players;
-  }
-
   const sortedPlayers = sortPlayersByScoreAndAge(players);
 
   return filterChampions(sortedPlayers);
-}
-
-function validatePlayers(players: Player[]): void {
-  if (!Array.isArray(players)) {
-    throw new Error("Input must be an array of players");
-  }
-
-  for (const player of players) {
-    if (typeof player.age !== "number" || player.age < 0) {
-      throw new Error(`Invalid age for player: ${JSON.stringify(player)}`);
-    }
-    if (typeof player.score !== "number" || isNaN(player.score)) {
-      throw new Error(`Invalid score for player: ${JSON.stringify(player)}`);
-    }
-  }
 }
 
 function sortPlayersByScoreAndAge(players: Player[]): Player[] {
@@ -40,6 +16,9 @@ function sortPlayersByScoreAndAge(players: Player[]): Player[] {
 }
 
 function filterChampions(sortedPlayers: Player[]): Player[] {
+  if (sortedPlayers.length === 0) {
+    return [];
+  }
   const champions: Player[] = [sortedPlayers[0]];
   let currentBestScore = sortedPlayers[0].score;
   let currentYoungestAge = sortedPlayers[0].age;
